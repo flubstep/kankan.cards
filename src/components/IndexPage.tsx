@@ -28,7 +28,7 @@ export function IndexPage() {
     <Box width="100vw" height="100dvh">
       <VStack>
         <Box mt={8}>
-          <Image height={196} src="/binoculars-with-text.svg" />
+          <Image height="80px" src="/binoculars-with-text-wide.svg" />
         </Box>
         <StartReviewSection />
         <TableContainer
