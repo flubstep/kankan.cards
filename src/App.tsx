@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Navigate } from "react-router";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CardCollectionPage } from "./components/CardCollectionPage";
+import { ReviewPage } from "./components/ReviewPage";
 import { IndexPage } from "./components/IndexPage";
 import { theme } from "./theme";
 
@@ -13,7 +13,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-            <Route path="/collection/:param" element={<CardCollectionPage />} />
+            <Route path="/review" element={<ReviewPage />} />
             <Route path="/" element={<IndexPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
