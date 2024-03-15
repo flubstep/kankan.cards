@@ -17,9 +17,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCards } from "../store/useCards";
 import { CardifyModalButton } from "./CardifyModalButton";
 import { StartReviewSection } from "./StartReviewSection";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 export function IndexPage() {
   const { cards, setCardActive, removeCard } = useCards();
+  const { width } = useWindowSize();
+  const isDesktop = width && width > 480;
+
   return (
     <Box width="100vw" height="100dvh">
       <VStack>
@@ -27,7 +31,12 @@ export function IndexPage() {
           <Image height={196} src="/binoculars-with-text.svg" />
         </Box>
         <StartReviewSection />
-        <TableContainer minWidth={[0, 640]} shadow="md" bg="white" borderRadius={8}>
+        <TableContainer
+          minWidth={[0, 640]}
+          shadow={["none", "md"]}
+          bg="white"
+          borderRadius={[0, 8]}
+        >
           <Table align="center">
             <Thead>
               <Tr>
@@ -46,8 +55,8 @@ export function IndexPage() {
               <Tr fontWeight="bold">
                 <Td textAlign="center">漢字</Td>
                 <Td textAlign="center">English</Td>
-                <Td textAlign="center">Active</Td>
-                <Td />
+                {isDesktop && <Td textAlign="center">Active</Td>}
+                {isDesktop && <Td />}
               </Tr>
             </Thead>
             <Tbody>
@@ -58,24 +67,28 @@ export function IndexPage() {
                     <Text>{card.pinyin}</Text>
                   </Td>
                   <Td textAlign="center">{card.english}</Td>
-                  <Td textAlign="center">
-                    <Switch
-                      isChecked={card.active}
-                      onChange={() => setCardActive(card, !card.active)}
-                      colorScheme="green"
-                    />
-                  </Td>
-                  <Td>
-                    <Button
-                      onClick={() => removeCard(card)}
-                      color="gray.700"
-                      size="xs"
-                      variant="outline"
-                      aria-label="Other Actions"
-                    >
-                      Remove
-                    </Button>
-                  </Td>
+                  {isDesktop && (
+                    <Td textAlign="center">
+                      <Switch
+                        isChecked={card.active}
+                        onChange={() => setCardActive(card, !card.active)}
+                        colorScheme="green"
+                      />
+                    </Td>
+                  )}
+                  {isDesktop && (
+                    <Td>
+                      <Button
+                        onClick={() => removeCard(card)}
+                        color="gray.700"
+                        size="xs"
+                        variant="outline"
+                        aria-label="Other Actions"
+                      >
+                        Remove
+                      </Button>
+                    </Td>
+                  )}
                 </Tr>
               ))}
             </Tbody>

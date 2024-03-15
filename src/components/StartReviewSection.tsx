@@ -12,6 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 enum Positions {
   Front,
@@ -28,6 +29,7 @@ function SelectPositionButtonGroup({
   position: Positions;
   setPosition: (position: Positions) => void;
 }) {
+  const { width } = useWindowSize();
   return (
     <Flex justify="space-between" align="center" gap={4}>
       <Text fontSize={label.length < 3 ? "xl" : "md"}>{label}</Text>
@@ -36,13 +38,13 @@ function SelectPositionButtonGroup({
           onClick={() => setPosition(Positions.Front)}
           colorScheme={position === Positions.Front ? "green" : "gray"}
         >
-          Show on Front
+          {width && width > 480 ? "Show on Front" : "Front"}
         </Button>
         <Button
           onClick={() => setPosition(Positions.Back)}
           colorScheme={position === Positions.Back ? "green" : "gray"}
         >
-          Show on Back
+          {width && width > 480 ? "Show on Back" : "Back"}
         </Button>
         <Button
           onClick={() => setPosition(Positions.Hidden)}
@@ -79,9 +81,9 @@ export function StartReviewSection() {
   return (
     <Flex
       flexDir="column"
-      minWidth={[0, 640]}
+      minWidth={["90%", 640]}
       my={4}
-      py={4}
+      p={4}
       align="center"
       bg="white"
       shadow="md"
