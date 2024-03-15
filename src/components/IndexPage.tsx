@@ -15,11 +15,10 @@ import {
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCards } from "../store/useCards";
-import { cardify } from "../api";
 import { CardifyModalButton } from "./CardifyModalButton";
 
 export function IndexPage() {
-  const { cards, addCards, setCardActive, removeCard } = useCards();
+  const { cards, setCardActive, removeCard } = useCards();
   return (
     <Box width="100vw" height="100dvh">
       <VStack>
@@ -64,7 +63,13 @@ export function IndexPage() {
                     />
                   </Td>
                   <Td>
-                    <Button color="gray.700" size="xs" variant="outline" aria-label="Other Actions">
+                    <Button
+                      onClick={() => removeCard(card)}
+                      color="gray.700"
+                      size="xs"
+                      variant="outline"
+                      aria-label="Other Actions"
+                    >
                       Remove
                     </Button>
                   </Td>
