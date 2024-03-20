@@ -36,8 +36,8 @@ export function ReviewPage() {
         if (!card.sentences) {
           continue;
         }
-        const max = card.sentences?.length || 0;
-        newSentenceIndex[card.id] = _.random(0, max);
+        const max = card.sentences?.length || 1;
+        newSentenceIndex[card.id] = _.random(0, max - 1);
       }
       setSentenceIndex(newSentenceIndex);
     },
@@ -52,8 +52,9 @@ export function ReviewPage() {
     const shuffled = _.shuffle(cardsToReview);
     const toReview = shuffled.slice(0, numReviews);
     setReviewCards(toReview);
+    updateSentenceIndexes(toReview);
     setCurrentCardIndex(0);
-  }, [numReviews, cards, currentCardIndex, reviewCards, useSentences]);
+  }, [numReviews, cards, currentCardIndex, reviewCards, useSentences, updateSentenceIndexes]);
 
   const currentCard = reviewCards[currentCardIndex];
   const currentCardOrSentence = useMemo(() => {
