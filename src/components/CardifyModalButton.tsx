@@ -1,27 +1,27 @@
+import { useCallback, useState } from 'react';
+
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  Textarea,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useState } from "react";
-import { useCards } from "../store/useCards";
-import { cardify } from "../api";
+    Button,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Text,
+    Textarea,
+    useDisclosure,
+} from '@chakra-ui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { cardify } from '../api';
+import { addCards } from '../store/useCards';
 
 export function CardifyModalButton() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cardText, setCardText] = useState<string>("");
-
-  const { addCards } = useCards();
 
   const handleAddCards = useCallback(async () => {
     setIsLoading(true);
@@ -30,7 +30,7 @@ export function CardifyModalButton() {
     setIsLoading(false);
     setCardText("");
     onClose();
-  }, [cardText, setCardText, onClose, addCards]);
+  }, [cardText, setCardText, onClose]);
 
   return (
     <>

@@ -1,94 +1,101 @@
-import { useCallback, useEffect, useState } from "react";
-
-import { db } from "./firebase";
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    orderBy,
+    query,
+    updateDoc,
+} from 'firebase/firestore';
+import { create } from 'zustand';
+
+import { db } from './firebase';
+
+export interface Sentence {
+  textChinese: string;
+  pinyinChinese: string;
+  textEnglish: string;
+}
 
 export interface Flashcard {
   id: string;
   chinese: string;
   pinyin: string;
   english: string;
+  sentences?: Sentence[];
   active: boolean;
   createdAt: number;
 }
 
 export type NewFlashcard = Omit<Flashcard, "id" | "createdAt">;
 
-export function useCards() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [cards, setCards] = useState<Flashcard[]>([]);
+export interface FlashcardState {
+  cards: Flashcard[];
+  isLoading: boolean;
+}
 
-  useEffect(() => {
-    setIsLoading(true);
-    const cardsRef = collection(db, "cards");
-    const cardsQuery = query(cardsRef, orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(cardsQuery, (snapshot) => {
-      const cards: Flashcard[] = [];
-      snapshot.forEach((doc) => {
-        const card = doc.data() as Flashcard;
-        card.id = doc.id;
-        cards.push(card);
-      });
-      setCards(cards);
-      setIsLoading(false);
+export const useCards = create<FlashcardState>(() => ({
+  cards: [],
+  isLoading: true,
+}));
+
+const cardsRef = collection(db, "cards");
+const cardsQuery = query(cardsRef, orderBy("createdAt", "desc"));
+onSnapshot(cardsQuery, (snapshot) => {
+  const cards: Flashcard[] = [];
+  snapshot.forEach((doc) => {
+    const card = doc.data() as Flashcard;
+    card.id = doc.id;
+    cards.push(card);
+  });
+  useCards.setState({ cards, isLoading: false });
+});
+
+export async function addCard(card: NewFlashcard) {
+  try {
+    const docRef = await addDoc(collection(db, "cards"), {
+      ...card,
+      active: true,
+      createdAt: Date.now(),
     });
-    return unsubscribe;
-  }, [setCards, setIsLoading]);
+    console.log("Document written with ID: ", docRef.id);
+    return docRef; // Return the document reference
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    throw e; // Rethrow the error to be handled by the caller
+  }
+}
 
-  const addCard = useCallback(async (card: NewFlashcard) => {
-    try {
-      const docRef = await addDoc(collection(db, "cards"), {
-        ...card,
-        active: true,
-        createdAt: Date.now(),
-      });
-      console.log("Document written with ID: ", docRef.id);
-      return docRef; // Return the document reference
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      throw e; // Rethrow the error to be handled by the caller
-    }
-  }, []);
+export async function addCards(cards: NewFlashcard[]) {
+  await Promise.all(cards.map((card) => addCard(card)));
+}
 
-  const addCards = useCallback(
-    async (cards: NewFlashcard[]) => {
-      await Promise.all(cards.map((card) => addCard(card)));
-    },
-    [addCard]
-  );
+export async function setCardActive(card: Flashcard, active: boolean) {
+  try {
+    await updateDoc(doc(db, "cards", card.id), { active });
+  } catch (e) {
+    console.error("Error updating document: ", e);
+    throw e;
+  }
+}
 
-  const setCardActive = useCallback(async (card: Flashcard, active: boolean) => {
-    try {
-      await updateDoc(doc(db, "cards", card.id), { active });
-    } catch (e) {
-      console.error("Error updating document: ", e);
-      throw e;
-    }
-  }, []);
+export async function removeCard(card: Flashcard) {
+  try {
+    await deleteDoc(doc(db, "cards", card.id));
+  } catch (e) {
+    console.error("Error removing document: ", e);
+    throw e;
+  }
+}
 
-  const removeCard = useCallback(async (card: Flashcard) => {
-    try {
-      await deleteDoc(doc(db, "cards", card.id));
-    } catch (e) {
-      console.error("Error removing document: ", e);
-      throw e;
-    }
-  }, []);
+export type UpdateFlashcardRequest = Partial<Omit<Flashcard, "id" | "createdAt">>;
 
-  return {
-    cards,
-    addCards,
-    setCardActive,
-    removeCard,
-    isLoading,
-  };
+export async function updateCard(cardId: string, card: UpdateFlashcardRequest) {
+  try {
+    await updateDoc(doc(db, "cards", cardId), card);
+  } catch (e) {
+    console.error("Error updating document: ", e);
+    throw e;
+  }
 }

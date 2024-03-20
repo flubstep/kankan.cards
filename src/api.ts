@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import OpenAI from 'openai';
 
 const openai = new OpenAI({
   // TODO: rotate this key
@@ -49,5 +49,69 @@ export async function cardify(lines: string) {
     } catch (e) {
       retries++;
     }
+  }
+}
+
+async function makeSentences_({
+  term,
+  count,
+  wordCount,
+}: {
+  term: string;
+  count: number;
+  wordCount: number;
+}) {
+  const system = `
+You are a helpful, native speaker of Chinese with a Taiwanese accent.
+You are trying to teach me more about Chinese.
+You will respond in JSON format.`;
+
+  const prompt = `
+Provide ${count} sentences that uses the word ${term}.
+Each sentence must be at least ${wordCount} words long.
+Respond with a JSON list of objects with this format:
+
+{
+  "textChinese": string, // The sentence in Chinese
+  "textEnglish": string, // The translation in English
+  "pinyinChinese": string // The pinyin pronunciation of the sentence in Chinese
+}
+`;
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: prompt },
+    ],
+  });
+  return response.choices[0].message.content;
+}
+
+export async function makeSentences({
+  term,
+  count,
+  wordCount,
+}: {
+  term: string;
+  count: number;
+  wordCount: number;
+}) {
+  let retries = 0;
+  while (retries < 3) {
+    const maybeObject = await makeSentences_({ term, count, wordCount });
+    try {
+      const value = JSON.parse(maybeObject || "");
+      if (
+        Array.isArray(value) &&
+        value.length === count &&
+        value.every((v) => typeof v === "object") &&
+        value.every((v) => "textChinese" in v)
+      ) {
+        return value;
+      }
+    } catch (e) {
+      // Ignore;
+    }
+    retries++;
   }
 }
