@@ -1,16 +1,17 @@
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    orderBy,
-    query,
-    updateDoc,
-} from 'firebase/firestore';
-import { create } from 'zustand';
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import { db } from './firebase';
+import { db } from "./firebase";
 
 export interface Sentence {
   textChinese: string;
@@ -35,10 +36,17 @@ export interface FlashcardState {
   isLoading: boolean;
 }
 
-export const useCards = create<FlashcardState>(() => ({
-  cards: [],
-  isLoading: true,
-}));
+export const useCards = create<FlashcardState>()(
+  persist<FlashcardState>(
+    () => ({
+      cards: [],
+      isLoading: true,
+    }),
+    {
+      name: "flashcards",
+    }
+  )
+);
 
 const cardsRef = collection(db, "cards");
 const cardsQuery = query(cardsRef, orderBy("createdAt", "desc"));

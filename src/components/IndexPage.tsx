@@ -71,7 +71,7 @@ function CardPreview({ card }: { card: Flashcard }) {
             <Stack direction="column" spacing={4} divider={<Divider />}>
               {Array.isArray(sentences) &&
                 sentences.map((sentence) => (
-                  <Box opacity={isLoading ? 0.5 : 1.0}>
+                  <Box key={sentence.textChinese} opacity={isLoading ? 0.5 : 1.0}>
                     <Text fontSize="lg">{sentence.textChinese}</Text>
                     <Text fontSize="xs" color="gray.700">
                       {sentence.pinyinChinese}
