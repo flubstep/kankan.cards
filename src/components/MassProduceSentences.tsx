@@ -74,17 +74,19 @@ export function MassProduceSentencesButton() {
                 </Text>
                 <Progress value={(processed / total) * 100} />
               </Stack>
-            ) : (
+            ) : cardsWithoutSentences.length > 0 ? (
               <Text>
                 This process will mass produce example sentences for {cardsWithoutSentences.length}{" "}
                 cards that do not have any example sentences.
               </Text>
+            ) : (
+              <Text>Every looks good! All cards have been filled out with example sentences.</Text>
             )}
           </ModalBody>
           <ModalFooter>
             <Button
               variant="outline"
-              isDisabled={isRunning}
+              isDisabled={isRunning || cardsWithoutSentences.length === 0}
               size="sm"
               onClick={() => handleStart(cardsWithoutSentences)}
             >

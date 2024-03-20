@@ -1,37 +1,37 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
 import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    IconButton,
-    Image,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Text,
-    Thead,
-    Tr,
-    VStack,
-} from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useWindowSize } from '@uidotdev/usehooks';
+  Box,
+  Button,
+  Divider,
+  Flex,
+  IconButton,
+  Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Thead,
+  Tr,
+  VStack,
+} from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useWindowSize } from "@uidotdev/usehooks";
 
-import { makeSentences } from '../api';
-import { Flashcard, removeCard, setCardActive, updateCard, useCards } from '../store/useCards';
-import { CardifyModalButton } from './CardifyModalButton';
-import { MassProduceSentencesButton } from './MassProduceSentences';
-import { StartReviewSection } from './StartReviewSection';
+import { makeSentences } from "../api";
+import { Flashcard, removeCard, setCardActive, updateCard, useCards } from "../store/useCards";
+import { CardifyModalButton } from "./CardifyModalButton";
+import { MassProduceSentencesButton } from "./MassProduceSentences";
+import { StartReviewSection } from "./StartReviewSection";
 
 function CardPreview({ card }: { card: Flashcard }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -155,7 +155,7 @@ export function IndexPage() {
             <Thead>
               <Tr>
                 <Td colSpan={3}>
-                  <Flex justify="space-between" align="center">
+                  <Flex justify="space-between" align="center" flexWrap="wrap" gap={2}>
                     <Flex align="center" gap={1}>
                       <FontAwesomeIcon icon={["fas", "layer-group"]} />
                       <Text fontSize="lg" fontWeight="bold">
