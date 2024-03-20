@@ -1,3 +1,6 @@
+import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Box,
   Button,
@@ -7,11 +10,10 @@ import {
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 enum Positions {
@@ -61,6 +63,7 @@ export function StartReviewSection() {
   const [chinesePosition, setChinesePosition] = useState<Positions>(Positions.Front);
   const [pinyinPosition, setPinyinPosition] = useState<Positions>(Positions.Front);
   const [englishPosition, setEnglishPosition] = useState<Positions>(Positions.Back);
+  const [useSentences, setUseSentences] = useState<boolean>(false);
   const [numReviews, setNumReviews] = useState<number>(30);
 
   const isDisabled = useMemo(() => {
@@ -74,9 +77,11 @@ export function StartReviewSection() {
   const navigate = useNavigate();
   const startReview = useCallback(() => {
     navigate(
-      `/review?chinese=${chinesePosition}&pinyin=${pinyinPosition}&english=${englishPosition}&numReviews=${numReviews}`
+      `/review?chinese=${chinesePosition}&pinyin=${pinyinPosition}&english=${englishPosition}&numReviews=${numReviews}&useSentences=${
+        useSentences ? 1 : 0
+      }`
     );
-  }, [navigate, chinesePosition, pinyinPosition, englishPosition, numReviews]);
+  }, [navigate, chinesePosition, pinyinPosition, englishPosition, numReviews, useSentences]);
 
   return (
     <Flex
@@ -111,8 +116,16 @@ export function StartReviewSection() {
             position={englishPosition}
             setPosition={setEnglishPosition}
           />
-          <Flex gap={8} mt={1}>
-            <Text>Cards</Text>
+          <Flex mt={4} align="center" justify="space-between">
+            <Text fontSize="sm">Show full sentences</Text>
+            <Switch
+              colorScheme="blue"
+              checked={useSentences}
+              onChange={() => setUseSentences((s) => !s)}
+            />
+          </Flex>
+          <Flex mt={1} align="center" justify="space-between">
+            <Text fontSize="sm">Number of cards</Text>
             <Slider
               aria-label="Number of reviews"
               value={numReviews}
@@ -120,6 +133,7 @@ export function StartReviewSection() {
               min={10}
               max={100}
               step={10}
+              maxW={36}
             >
               <SliderTrack>
                 <SliderFilledTrack />
