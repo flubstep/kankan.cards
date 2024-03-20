@@ -40,6 +40,16 @@ function CardPreview({ card }: { card: Flashcard }) {
   const sentences = card.sentences || [];
   const numSentences = sentences.length;
 
+  const handleDeleteSentences = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await updateCard(card.id, { sentences: [] });
+      setIsOpen(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setIsLoading, card, setIsOpen]);
+
   const handleRefreshSentences = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -74,15 +84,26 @@ function CardPreview({ card }: { card: Flashcard }) {
             </Stack>
           </ModalBody>
           <ModalFooter>
-            <Button
-              isDisabled={isLoading}
-              size="sm"
-              variant="outline"
-              leftIcon={<FontAwesomeIcon spin={isLoading} icon="arrows-rotate" />}
-              onClick={handleRefreshSentences}
-            >
-              Regenerate examples
-            </Button>
+            <Stack direction="row">
+              <Button
+                isDisabled={isLoading}
+                size="sm"
+                variant="ghost"
+                colorScheme="red"
+                onClick={handleDeleteSentences}
+              >
+                Delete examples
+              </Button>
+              <Button
+                isDisabled={isLoading}
+                size="sm"
+                variant="outline"
+                leftIcon={<FontAwesomeIcon spin={isLoading} icon="arrows-rotate" />}
+                onClick={handleRefreshSentences}
+              >
+                Regenerate examples
+              </Button>
+            </Stack>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -182,7 +203,7 @@ export function IndexPage() {
                           onClick={() => removeCard(card)}
                           colorScheme="red"
                           size="xs"
-                          variant="outline"
+                          variant="ghost"
                           aria-label="Other Actions"
                         >
                           Remove
