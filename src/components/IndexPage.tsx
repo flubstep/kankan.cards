@@ -3,8 +3,6 @@ import { useCallback, useState } from 'react';
 import {
     Box,
     Button,
-    Card,
-    CardBody,
     Divider,
     Flex,
     IconButton,
@@ -32,6 +30,7 @@ import { useWindowSize } from '@uidotdev/usehooks';
 import { makeSentences } from '../api';
 import { Flashcard, removeCard, setCardActive, updateCard, useCards } from '../store/useCards';
 import { CardifyModalButton } from './CardifyModalButton';
+import { MassProduceSentencesButton } from './MassProduceSentences';
 import { StartReviewSection } from './StartReviewSection';
 
 function CardPreview({ card }: { card: Flashcard }) {
@@ -160,10 +159,13 @@ export function IndexPage() {
                     <Flex align="center" gap={1}>
                       <FontAwesomeIcon icon={["fas", "layer-group"]} />
                       <Text fontSize="lg" fontWeight="bold">
-                        Flashcards
+                        Flashcards ({cards.length})
                       </Text>
                     </Flex>
-                    <CardifyModalButton />
+                    <Stack direction="row">
+                      <MassProduceSentencesButton />
+                      <CardifyModalButton />
+                    </Stack>
                   </Flex>
                 </Td>
               </Tr>
